@@ -31,6 +31,14 @@
 - Added media-button-event fallback handling when the normal transport action is unavailable.
 - This improves compatibility, but background playback is ultimately controlled by the individual music app and Android's media-session/background policies.
 
+## Releases and downloads
+
+- **[Latest release](https://github.com/MrPaper3ag/NEXUS/releases/latest)** — open the newest published version and download its APK/assets.
+- **[All releases](https://github.com/MrPaper3ag/NEXUS/releases)** — browse older versions and their release notes.
+- **[GitHub Actions builds](https://github.com/MrPaper3ag/NEXUS/actions)** — access workflow runs and downloadable build artifacts (including debug builds).
+
+> Note: GitHub Actions artifacts are separate from published Releases. A build only appears on the Releases page after a release is created and its APK is attached.
+
 ## Build it
 
 The repository uses GitHub Actions to build against the upstream Android foundation.
