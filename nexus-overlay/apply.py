@@ -29,3 +29,28 @@ if old not in s: raise SystemExit('Glass body missing')
 s=s.replace(old,new,1); old='        drawOutline(outline, rim, alpha = 0.35f, style = wideRim)\n        drawOutline(outline, rim, style = thinRim)'; new='        drawOutline(outline, rim, alpha = 0.52f, style = wideRim)\n        drawOutline(outline, rim, style = thinRim)\n        drawOutline(outline, Color.White.copy(alpha = 0.22f), style = Stroke(width = 0.8f * dp))';
 if old not in s: raise SystemExit('Glass rim missing')
 p.write_text(s.replace(old,new,1))
+
+# Make media play/pause honour session capabilities; use media-button fallback when absent.
+p=Path('app/src/main/java/com/akira/island/core/Controls.kt')
+old='''    fun playPause() {
+        val c = mediaController ?: return
+        if (c.playbackState?.state == PlaybackState.STATE_PLAYING) c.transportControls.pause()
+        else c.transportControls.play()
+    }'''
+new='''    fun playPause() {
+        val c = mediaController ?: return
+        val state = c.playbackState
+        val playing = state?.state == PlaybackState.STATE_PLAYING || state?.state == PlaybackState.STATE_BUFFERING
+        val action = if (playing) PlaybackState.ACTION_PAUSE else PlaybackState.ACTION_PLAY
+        val keyCode = if (playing) android.view.KeyEvent.KEYCODE_MEDIA_PAUSE else android.view.KeyEvent.KEYCODE_MEDIA_PLAY
+        val supported = (state?.actions ?: 0L) and action != 0L
+        runCatching {
+            if (supported) {
+                if (playing) c.transportControls.pause() else c.transportControls.play()
+            } else {
+                c.dispatchMediaButtonEvent(android.view.KeyEvent(android.view.KeyEvent.ACTION_DOWN, keyCode))
+                c.dispatchMediaButtonEvent(android.view.KeyEvent(android.view.KeyEvent.ACTION_UP, keyCode))
+            }
+        }
+    }'''
+rep(p,old,new,'playPause')
