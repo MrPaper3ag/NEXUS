@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Akira9021/Dynamic-Island-
-          ref: main
+          ref: claude/android-dynamic-island-yrzsvq
           path: upstream
 
       - name: Set up Java
